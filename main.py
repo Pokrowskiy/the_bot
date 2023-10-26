@@ -27,7 +27,8 @@ def menu_message(message):
 help_text = """На данный момент бот состоит из следующих функций:\n[Обязательный параметр]<необязательный параметр>
 \n\nПогода. Ключевое слово(КС) - "Погода" или "Weather"\nКС [Город]\nПример : Погода Москва\n\n
 Рандомайзер. Ключевое слово(КС) - "roll", "куб" или "брось" \n КС <Количество бросков(должно оканчиваться на "d")><Минимум><Максимум>\n Пример : roll 5d10-50\nПри отсутствии параметров выдаёт случаное число (1-100)\n\n
-Конвертер валют. Ключевое слово(кс) - "Переведи" или "convert"\n КС [Пара валют] <Сумма перевода>\nПримеры : Переведи EUR/USD   , convert USD/GBP 30\n\n
+Конвертер валют. Ключевое слово(кс) - "Переведи" или "convert"\n КС [Пара валют] <Сумма перевода>\nПримеры : Переведи EUR/USD   , convert USD/GBP 30
+\n\nПрисутствует возможность отправки предложения по улучшению или отчёта об ошибке.\nДля этого отправьте боту сообщение*, начинающееся со слова "report"\n*Отправкой сообщения вы подтверждаете согласие на сбор, хранение и обработку персональных данных.\n\n
 Также полезные команды : \n \n/start - Начать с начала \n/hello - Вежливо поздороваться с ботом.\n/menu - выход в меню.\n/help - если вы запутались и потерялись."""
 
 
@@ -147,6 +148,12 @@ def conv(text,message):
     except FormatError:
        bot.send_message(message.chat.id,"Похоже, формат неверен...")
 
+def send_report(message):
+    text = message.text
+    bot.send_message(message.chat.id, "Спасибо за помощь в разработке и улучшении!\nМы уже работаем над исправлением!")
+    bot.send_message(5168359279, text)
+    bot.send_message(5168359279, "От пользователя "+str(message.from_user.first_name))
+
 @bot.message_handler()
 def info(message):
     text = message.text.lower()
@@ -165,6 +172,9 @@ def info(message):
 
     if fst == "переведи" or fst == "convert":
         conv(text,message)
+
+    if fst == "report" or "баг" in text :
+        send_report(message)
 
     if "привет" in text:
         bot.send_message(message.chat.id,"Тебе тоже привет, "+message.from_user.first_name)
